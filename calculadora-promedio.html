@@ -1,40 +1,152 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
+
 <head>
+<meta charset="UTF-8">
 <title>Calculadora de Promedio</title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+background:#0f172a;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.container{
+background:#1e293b;
+padding:40px;
+border-radius:10px;
+width:350px;
+text-align:center;
+box-shadow:0 0 20px rgba(0,0,0,0.3);
+}
+
+h1{
+margin-bottom:20px;
+}
+
+input{
+width:90%;
+padding:10px;
+margin:8px 0;
+border:none;
+border-radius:5px;
+font-size:16px;
+}
+
+button{
+width:95%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:5px;
+font-size:16px;
+cursor:pointer;
+}
+
+.calcular{
+background:#3b82f6;
+color:white;
+}
+
+.calcular:hover{
+background:#2563eb;
+}
+
+.limpiar{
+background:#475569;
+color:white;
+}
+
+.limpiar:hover{
+background:#334155;
+}
+
+.resultado{
+margin-top:20px;
+font-size:20px;
+font-weight:bold;
+color:#22c55e;
+}
+
+.error{
+color:#ef4444;
+margin-top:10px;
+}
+
+a{
+display:block;
+margin-top:20px;
+color:#94a3b8;
+text-decoration:none;
+}
+
+</style>
+
 </head>
 
 <body>
 
+<div class="container">
+
 <h1>Calculadora de Promedio</h1>
 
-<p>Ingresa tres números:</p>
+<input id="n1" type="number" placeholder="Número 1">
+<input id="n2" type="number" placeholder="Número 2">
+<input id="n3" type="number" placeholder="Número 3">
 
-<input id="num1" type="number" placeholder="Número 1">
-<br><br>
+<button class="calcular" onclick="calcularPromedio()">Calcular promedio</button>
 
-<input id="num2" type="number" placeholder="Número 2">
-<br><br>
+<button class="limpiar" onclick="limpiar()">Limpiar</button>
 
-<input id="num3" type="number" placeholder="Número 3">
-<br><br>
+<div id="resultado" class="resultado"></div>
+<div id="error" class="error"></div>
 
-<button onclick="calcular()">Calcular Promedio</button>
+<a href="index.html">← Volver al inicio</a>
 
-<h2 id="resultado"></h2>
+</div>
 
 <script>
-function calcular(){
 
-let n1 = parseFloat(document.getElementById("num1").value);
-let n2 = parseFloat(document.getElementById("num2").value);
-let n3 = parseFloat(document.getElementById("num3").value);
+function calcularPromedio(){
+
+let n1 = parseFloat(document.getElementById("n1").value);
+let n2 = parseFloat(document.getElementById("n2").value);
+let n3 = parseFloat(document.getElementById("n3").value);
+
+let resultado = document.getElementById("resultado");
+let error = document.getElementById("error");
+
+resultado.innerHTML="";
+error.innerHTML="";
+
+if(isNaN(n1) || isNaN(n2) || isNaN(n3)){
+error.innerHTML="Por favor ingresa los tres números.";
+return;
+}
 
 let promedio = (n1+n2+n3)/3;
 
-document.getElementById("resultado").innerText = "El promedio es: " + promedio;
+resultado.innerHTML="El promedio es: " + promedio.toFixed(2);
 
 }
+
+function limpiar(){
+
+document.getElementById("n1").value="";
+document.getElementById("n2").value="";
+document.getElementById("n3").value="";
+document.getElementById("resultado").innerHTML="";
+document.getElementById("error").innerHTML="";
+
+}
+
 </script>
 
 </body>
