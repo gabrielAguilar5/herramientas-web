@@ -12,7 +12,7 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family: 'Segoe UI', sans-serif;
+font-family:'Segoe UI', sans-serif;
 }
 
 body{
@@ -37,47 +37,42 @@ font-size:20px;
 nav a{
 color:white;
 text-decoration:none;
-margin-left:20px;
 }
 
-/* CONTENEDOR */
+/* MAIN */
 .main{
 display:flex;
 justify-content:center;
 align-items:center;
-height:90vh;
+min-height:90vh;
 }
 
+/* CARD */
 .card{
 background:#1e293b;
 padding:40px;
 border-radius:15px;
-width:350px;
+width:380px;
 text-align:center;
 box-shadow:0 0 20px rgba(0,0,0,0.3);
 animation:fadeIn 1s ease;
 }
 
-/* ICONO */
+/* ICON */
 .icon{
-font-size:35px;
-margin-bottom:10px;
+font-size:32px;
 color:#3b82f6;
-}
-
-h2{
-margin-bottom:20px;
+margin-bottom:10px;
 }
 
 /* INPUTS */
-input{
+select, input{
 width:100%;
 padding:12px;
 margin:8px 0;
 border:none;
 border-radius:8px;
 outline:none;
-font-size:16px;
 }
 
 /* BOTONES */
@@ -88,52 +83,49 @@ margin-top:10px;
 border:none;
 border-radius:8px;
 cursor:pointer;
-font-size:16px;
+font-size:15px;
 }
 
-.calcular{
-background:#3b82f6;
-color:white;
-}
+.calcular{background:#3b82f6;color:white;}
+.calcular:hover{background:#2563eb;}
 
-.calcular:hover{
-background:#2563eb;
-}
+.limpiar{background:#475569;color:white;}
+.limpiar:hover{background:#334155;}
 
-.limpiar{
-background:#475569;
-color:white;
-}
-
-.limpiar:hover{
-background:#334155;
-}
+.add{background:#22c55e;color:white;}
+.remove{background:#ef4444;color:white;}
 
 /* RESULTADO */
 .resultado{
 margin-top:20px;
-font-size:22px;
-font-weight:bold;
+font-size:20px;
 color:#22c55e;
+font-weight:bold;
 }
 
 .error{
-margin-top:10px;
 color:#ef4444;
+margin-top:10px;
+}
+
+/* BOTONES EXTRA */
+.extra-buttons{
+display:flex;
+gap:10px;
+}
+
+/* LINK */
+.back{
+display:block;
+margin-top:20px;
+color:#94a3b8;
+text-decoration:none;
 }
 
 /* ANIMACIÓN */
 @keyframes fadeIn{
 from{opacity:0; transform:translateY(20px);}
 to{opacity:1; transform:translateY(0);}
-}
-
-.back{
-display:block;
-margin-top:20px;
-color:#94a3b8;
-text-decoration:none;
-font-size:14px;
 }
 
 </style>
@@ -143,9 +135,7 @@ font-size:14px;
 
 <nav>
 <h1>HerramientasPro</h1>
-<div>
 <a href="index.html">Inicio</a>
-</div>
 </nav>
 
 <div class="main">
@@ -158,17 +148,28 @@ font-size:14px;
 
 <h2>Calculadora de Promedio</h2>
 
-<input type="number" id="n1" placeholder="Número 1">
-<input type="number" id="n2" placeholder="Número 2">
-<input type="number" id="n3" placeholder="Número 3">
+<select id="cantidad" onchange="generarInputs()">
+<option value="">Cantidad de números</option>
+<option value="2">2 números</option>
+<option value="3">3 números</option>
+<option value="4">4 números</option>
+<option value="5">5 números</option>
+</select>
 
-<button class="calcular" onclick="calcular()">Calcular promedio</button>
+<div id="inputs"></div>
+
+<div class="extra-buttons">
+<button class="add" onclick="agregar()">+</button>
+<button class="remove" onclick="quitar()">−</button>
+</div>
+
+<button class="calcular" onclick="calcular()">Calcular</button>
 <button class="limpiar" onclick="limpiar()">Limpiar</button>
 
 <div id="resultado" class="resultado"></div>
 <div id="error" class="error"></div>
 
-<a class="back" href="index.html">Volver al inicio</a>
+<a class="back" href="index.html">← Volver</a>
 
 </div>
 
@@ -176,37 +177,106 @@ font-size:14px;
 
 <script>
 
+function generarInputs(){
+let cantidad = document.getElementById("cantidad").value;
+let contenedor = document.getElementById("inputs");
+
+contenedor.innerHTML = "";
+
+for(let i=1;i<=cantidad;i++){
+crearInput(i);
+}
+}
+
+function crearInput(i){
+let contenedor = document.getElementById("inputs");
+
+let input = document.createElement("input");
+input.type = "number";
+input.placeholder = "Número " + i;
+input.classList.add("numero");
+
+input.addEventListener("input", calcularAuto);
+
+contenedor.appendChild(input);
+}
+
+function agregar(){
+let total = document.querySelectorAll(".numero").length + 1;
+crearInput(total);
+}
+
+function quitar(){
+let inputs = document.querySelectorAll(".numero");
+if(inputs.length > 1){
+inputs[inputs.length - 1].remove();
+calcularAuto();
+}
+}
+
 function calcular(){
 
-let n1 = parseFloat(document.getElementById("n1").value);
-let n2 = parseFloat(document.getElementById("n2").value);
-let n3 = parseFloat(document.getElementById("n3").value);
+let numeros = document.querySelectorAll(".numero");
+let suma = 0;
 
-let resultado = document.getElementById("resultado");
-let error = document.getElementById("error");
-
-resultado.innerHTML="";
-error.innerHTML="";
-
-if(isNaN(n1) || isNaN(n2) || isNaN(n3)){
-error.innerHTML="Ingresa los 3 valores correctamente";
+if(numeros.length === 0){
+mostrarError("Selecciona cantidad de números");
 return;
 }
 
-let promedio = (n1+n2+n3)/3;
+for(let n of numeros){
+let valor = parseFloat(n.value);
+if(isNaN(valor)){
+mostrarError("Completa todos los campos");
+return;
+}
+suma += valor;
+}
 
-resultado.innerHTML = "Promedio: " + promedio.toFixed(2);
+let promedio = suma / numeros.length;
+
+mostrarResultado(promedio);
 
 }
 
+function calcularAuto(){
+
+let numeros = document.querySelectorAll(".numero");
+
+let completos = true;
+let suma = 0;
+
+for(let n of numeros){
+let valor = parseFloat(n.value);
+if(isNaN(valor)){
+completos = false;
+break;
+}
+suma += valor;
+}
+
+if(completos && numeros.length > 0){
+let promedio = suma / numeros.length;
+mostrarResultado(promedio);
+}
+
+}
+
+function mostrarResultado(promedio){
+document.getElementById("error").innerText="";
+document.getElementById("resultado").innerText="Promedio: " + promedio.toFixed(2);
+}
+
+function mostrarError(msg){
+document.getElementById("resultado").innerText="";
+document.getElementById("error").innerText=msg;
+}
+
 function limpiar(){
-
-document.getElementById("n1").value="";
-document.getElementById("n2").value="";
-document.getElementById("n3").value="";
-document.getElementById("resultado").innerHTML="";
-document.getElementById("error").innerHTML="";
-
+document.getElementById("inputs").innerHTML="";
+document.getElementById("resultado").innerText="";
+document.getElementById("error").innerText="";
+document.getElementById("cantidad").value="";
 }
 
 </script>
