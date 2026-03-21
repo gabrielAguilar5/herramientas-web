@@ -1,1 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora IMC | HerramientasPro</title>
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI', sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#020617,#0f172a);
+color:white;
+}
+
+/* NAV */
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 40px;
+background:rgba(2,6,23,0.8);
+}
+
+nav h1{font-size:20px;}
+nav a{color:white;text-decoration:none;}
+
+/* MAIN */
+.main{
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:90vh;
+}
+
+/* CARD */
+.card{
+background:#1e293b;
+padding:40px;
+border-radius:15px;
+width:380px;
+text-align:center;
+box-shadow:0 0 20px rgba(0,0,0,0.3);
+animation:fadeIn 1s ease;
+}
+
+.icon{
+font-size:32px;
+color:#3b82f6;
+margin-bottom:10px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border:none;
+border-radius:8px;
+}
+
+/* BOTONES */
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:15px;
+}
+
+.calcular{background:#3b82f6;color:white;}
+.calcular:hover{background:#2563eb;}
+
+.limpiar{background:#475569;color:white;}
+.limpiar:hover{background:#334155;}
+
+/* RESULTADO */
+.resultado{
+margin-top:20px;
+font-size:22px;
+font-weight:bold;
+}
+
+.categoria{
+margin-top:10px;
+font-size:18px;
+}
+
+.error{
+color:#ef4444;
+margin-top:10px;
+}
+
+/* LINK */
+.back{
+display:block;
+margin-top:20px;
+color:#94a3b8;
+text-decoration:none;
+}
+
+/* ANIMACIÓN */
+@keyframes fadeIn{
+from{opacity:0; transform:translateY(20px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+<h1>HerramientasPro</h1>
+<a href="index.html">Inicio</a>
+</nav>
+
+<div class="main">
+
+<div class="card">
+
+<div class="icon">
+<i class="fas fa-weight"></i>
+</div>
+
+<h2>Calculadora IMC</h2>
+
+<input type="number" id="peso" placeholder="Peso (kg)">
+<input type="number" id="altura" placeholder="Altura (cm)">
+
+<button class="calcular" onclick="calcularIMC()">Calcular IMC</button>
+<button class="limpiar" onclick="limpiar()">Limpiar</button>
+
+<div id="resultado" class="resultado"></div>
+<div id="categoria" class="categoria"></div>
+<div id="error" class="error"></div>
+
+<a class="back" href="index.html">← Volver</a>
+
+</div>
+
+</div>
+
+<script>
+
+function calcularIMC(){
+
+let peso = parseFloat(document.getElementById("peso").value);
+let altura = parseFloat(document.getElementById("altura").value);
+
+let resultado = document.getElementById("resultado");
+let categoria = document.getElementById("categoria");
+let error = document.getElementById("error");
+
+resultado.innerText="";
+categoria.innerText="";
+error.innerText="";
+
+if(isNaN(peso) || isNaN(altura)){
+error.innerText="Ingresa peso y altura correctamente";
+return;
+}
+
+let alturaM = altura / 100;
+let imc = peso / (alturaM * alturaM);
+
+resultado.innerText="IMC: " + imc.toFixed(2);
+
+/* CLASIFICACIÓN */
+if(imc < 18.5){
+categoria.innerText="Bajo peso";
+categoria.style.color="#facc15";
+}
+else if(imc < 25){
+categoria.innerText="Peso normal";
+categoria.style.color="#22c55e";
+}
+else if(imc < 30){
+categoria.innerText="Sobrepeso";
+categoria.style.color="#f97316";
+}
+else{
+categoria.innerText="Obesidad";
+categoria.style.color="#ef4444";
+}
+
+}
+
+function limpiar(){
+document.getElementById("peso").value="";
+document.getElementById("altura").value="";
+document.getElementById("resultado").innerText="";
+document.getElementById("categoria").innerText="";
+document.getElementById("error").innerText="";
+}
+
+</script>
+
+</body>
+</html>
